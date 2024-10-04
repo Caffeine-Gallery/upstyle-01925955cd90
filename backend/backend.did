@@ -1,6 +1,6 @@
 type FileEntry = 
  record {
-   content: blob;
+   content: vec nat8;
    contentType: text;
    name: text;
  };
@@ -8,5 +8,5 @@ service : {
   deleteFile: (text) -> (text);
   getFile: (text) -> (opt FileEntry) query;
   getFileNames: () -> (vec text) query;
-  uploadFile: (text, blob, text) -> (text);
+  uploadFile: (text, vec nat8, text) -> (text);
 }

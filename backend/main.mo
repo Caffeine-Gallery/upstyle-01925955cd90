@@ -2,18 +2,18 @@ import Func "mo:base/Func";
 import Hash "mo:base/Hash";
 
 import Array "mo:base/Array";
-import Blob "mo:base/Blob";
 import Debug "mo:base/Debug";
 import HashMap "mo:base/HashMap";
 import Iter "mo:base/Iter";
 import Nat "mo:base/Nat";
+import Nat8 "mo:base/Nat8";
 import Text "mo:base/Text";
 
 actor FileUploader {
   // Define a type for our file entries
   type FileEntry = {
     name: Text;
-    content: Blob;
+    content: [Nat8];
     contentType: Text;
   };
 
@@ -24,7 +24,7 @@ actor FileUploader {
   var fileStorage = HashMap.fromIter<Text, FileEntry>(fileEntries.vals(), 10, Text.equal, Text.hash);
 
   // Function to upload a file
-  public func uploadFile(name: Text, content: Blob, contentType: Text) : async Text {
+  public func uploadFile(name: Text, content: [Nat8], contentType: Text) : async Text {
     let newFile : FileEntry = {
       name = name;
       content = content;

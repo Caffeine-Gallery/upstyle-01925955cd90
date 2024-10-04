@@ -20,11 +20,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const arrayBuffer = await file.arrayBuffer();
             const uint8Array = new Uint8Array(arrayBuffer);
-            const blob = [...uint8Array];
 
             progressBar.style.width = '50%';
 
-            const result = await backend.uploadFile(file.name, blob, file.type);
+            const result = await backend.uploadFile(file.name, Array.from(uint8Array), file.type);
             console.log(result);
 
             progressBar.style.width = '100%';
@@ -42,30 +41,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     async function updateFileList() {
-        const files = await backend.getFileNames();
-        fileList.innerHTML = '';
-        files.forEach(fileName => {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-            fileItem.textContent = fileName;
-            
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.className = 'delete-button';
-            deleteButton.onclick = async () => {
-                await backend.deleteFile(fileName);
-                updateFileList();
-            };
-            
-            const viewDownloadButton = document.createElement('button');
-            viewDownloadButton.textContent = 'View/Download';
-            viewDownloadButton.className = 'view-download-button';
-            viewDownloadButton.onclick = () => viewOrDownloadFile(fileName);
-            
-            fileItem.appendChild(deleteButton);
-            fileItem.appendChild(viewDownloadButton);
-            fileList.appendChild(fileItem);
-        });
+        try {
+            const files = await backend.getFileNames();
+            fileList.innerHTML = '';
+            files.forEach(fileName => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.textContent = fileName;
+                
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-button';
+                deleteButton.onclick = async () => {
+                    try {
+                        await backend.deleteFile(fileName);
+                        updateFileList();
+                    } catch (error) {
+                        console.error('Error deleting file:', error);
+                        alert('Error deleting file. Please try again.');
+                    }
+                };
+                
+                const viewDownloadButton = document.createElement('button');
+                viewDownloadButton.textContent = 'View/Download';
+                viewDownloadButton.className = 'view-download-button';
+                viewDownloadButton.onclick = () => viewOrDownloadFile(fileName);
+                
+                fileItem.appendChild(deleteButton);
+                fileItem.appendChild(viewDownloadButton);
+                fileList.appendChild(fileItem);
+            });
+        } catch (error) {
+            console.error('Error updating file list:', error);
+            alert('Error updating file list. Please refresh the page.');
+        }
     }
 
     async function viewOrDownloadFile(fileName) {
