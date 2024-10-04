@@ -78,7 +78,7 @@ h1 {
     align-items: center;
 }
 
-.delete-button, .view-download-button {
+.delete-button, .view-button {
     color: white;
     border: none;
     padding: 5px 10px;
@@ -91,6 +91,6 @@ h1 {
     background-color: #f44336;
 }
 
-.view-download-button {
+.view-button {
     background-color: #2196F3;
 }

@@ -62,13 +62,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 };
                 
-                const viewDownloadButton = document.createElement('button');
-                viewDownloadButton.textContent = 'View/Download';
-                viewDownloadButton.className = 'view-download-button';
-                viewDownloadButton.onclick = () => viewOrDownloadFile(fileName);
+                const viewButton = document.createElement('button');
+                viewButton.textContent = 'View';
+                viewButton.className = 'view-button';
+                viewButton.onclick = () => viewFile(fileName);
                 
                 fileItem.appendChild(deleteButton);
-                fileItem.appendChild(viewDownloadButton);
+                fileItem.appendChild(viewButton);
                 fileList.appendChild(fileItem);
             });
         } catch (error) {
@@ -77,34 +77,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    async function viewOrDownloadFile(fileName) {
+    async function viewFile(fileName) {
         try {
             const fileEntry = await backend.getFile(fileName);
             if (fileEntry) {
                 const { content, contentType } = fileEntry;
                 const blob = new Blob([new Uint8Array(content)], { type: contentType });
-                
-                if (contentType.startsWith('image/') || contentType === 'text/plain') {
-                    // View the file
-                    const url = URL.createObjectURL(blob);
-                    window.open(url, '_blank');
-                } else {
-                    // Download the file
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                URL.revokeObjectURL(url);
             } else {
                 alert('File not found');
             }
         } catch (error) {
-            console.error('Error viewing/downloading file:', error);
-            alert('Error viewing/downloading file. Please try again.');
+            console.error('Error viewing file:', error);
+            alert('Error viewing file. Please try again.');
         }
     }
 
