@@ -1,0 +1,12 @@
+type FileEntry = 
+ record {
+   content: blob;
+   contentType: text;
+   name: text;
+ };
+service : {
+  deleteFile: (text) -> (text);
+  getFile: (text) -> (opt FileEntry) query;
+  getFileNames: () -> (vec text) query;
+  uploadFile: (text, blob, text) -> (text);
+}
