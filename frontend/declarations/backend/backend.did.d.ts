@@ -10,6 +10,7 @@ export interface FileEntry {
 export interface _SERVICE {
   'deleteFile' : ActorMethod<[string], string>,
   'getFile' : ActorMethod<[string], [] | [FileEntry]>,
+  'getFileContent' : ActorMethod<[string], [] | [Uint8Array | number[]]>,
   'getFileNames' : ActorMethod<[], Array<string>>,
   'uploadFile' : ActorMethod<[string, Uint8Array | number[], string], string>,
 }

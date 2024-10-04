@@ -1,4 +1,10 @@
-import { backend } from 'declarations/backend';
+import { Actor, HttpAgent } from "@dfinity/agent";
+
+const agent = new HttpAgent();
+const backend = Actor.createActor(idlFactory, {
+  agent,
+  canisterId: process.env.BACKEND_CANISTER_ID,
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
     const fileInput = document.getElementById('fileInput');
@@ -79,13 +85,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function viewFile(fileName) {
         try {
-            const fileEntry = await backend.getFile(fileName);
-            if (fileEntry) {
-                const { content, contentType } = fileEntry;
-                const blob = new Blob([new Uint8Array(content)], { type: contentType });
-                const url = URL.createObjectURL(blob);
+            const fileContent = await backend.getFileContent(fileName);
+            
+            if (fileContent) {
+                const canisterId = process.env.BACKEND_CANISTER_ID || '';
+                const network = process.env.DFX_NETWORK || 'local';
+                const host = network === 'ic' ? 'raw.ic0.app' : 'localhost:8000';
+                const protocol = network === 'ic' ? 'https://' : 'http://';
+                
+                const url = `${protocol}${canisterId}.${host}/file/${fileName}`;
                 window.open(url, '_blank');
-                URL.revokeObjectURL(url);
             } else {
                 alert('File not found');
             }

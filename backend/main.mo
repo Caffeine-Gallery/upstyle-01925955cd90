@@ -45,6 +45,14 @@ actor FileUploader {
     return fileStorage.get(name);
   };
 
+  // Function to get file content
+  public query func getFileContent(name: Text) : async ?[Nat8] {
+    switch (fileStorage.get(name)) {
+      case (null) { null };
+      case (?file) { ?file.content };
+    };
+  };
+
   // Function to delete a file
   public func deleteFile(name: Text) : async Text {
     fileStorage.delete(name);
